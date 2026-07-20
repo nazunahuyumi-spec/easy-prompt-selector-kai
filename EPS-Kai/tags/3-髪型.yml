@@ -1,0 +1,88 @@
+髪の長さ:
+  ショート: "short hair"
+  ボブ: "chin-length bob"
+  肩出しミディアム: "shoulder-length hair, medium hair"
+  胸まで: "chest-length hair"
+  腰まで: "waist-length hair, long hair"
+  足より長い: "extremely long hair, longer than feet"
+  左右非対称: "asymmetrical hair length"
+
+髪の特殊彩色:
+  マルチカラー: "multicolored hair, colorful streaks"
+  メッシュ: "streaked hair, chunky highlights"
+  グラデーション: "gradient hair, ombre hair"
+  インナーカラー: "colored inner hair, hidden hair color"
+  ツートンカラー: "two-tone hair, dual tone"
+  レインボー: "rainbow hair, spectrum colors"
+  パステルグラデーション: "pastel gradient hair, soft colors"
+
+髪質:
+  高光沢: "high gloss hair, shiny hair"
+  天使の輪（キューティクル）: "angel ring hair, halo reflection"
+  ふわふわ: "fluffy soft hair, bouncy"
+  ストレート強調: "poker straight hair, pin straight"
+  カール（縦巻き）: "ringlet curls, corkscrew curls"
+  毛束感あり: "thick clumps of hair, chunky strands"
+  繊細な毛束: "fine wispy strands, stray hair"
+  濡れ髪（滴る）: "wet hair look, dripping wet"
+  乱れ髪: "messy disheveled hair, bedhead"
+
+髪の色 (Hair Color):
+  基本・標準色:
+    黒髪: "black hair, raven hair|#000000"
+    ブラウン髪: "brown hair, chestnut hair|#a52a2a"
+    金髪: "gold hair, blonde hair|#ffd700"
+    銀髪: "silver hair, platinum blonde|#c0c0c0"
+    白髪: "white hair, snowy white|#ffffff"
+    灰色髪: "gray hair, ash gray|#808080"
+    赤髪: "red hair, crimson hair|#ff0000"
+    青髪: "blue hair, azure hair|#0000ff"
+    翠色髪: "green hair, emerald green|#00ff00"
+    ピンク髪: "pink hair, rose hair|#ffc0cb"
+    パープル髪: "purple hair, violet hair|#800080"
+  宝石・貴金属:
+    ルビー髪: "ruby hair|#e0115f"
+    サファイア髪: "sapphire hair|#0f52ba"
+    ダイヤモンド髪: "diamond hair, sparkling white|#b9f2ff"
+    エメラルド髪: "emerald hair|#50c878"
+  自然・風景ニュアンス:
+    サクラ髪: "cherry blossom hair, pale pink|#fef2f4"
+    ラベンダー髪: "lavender hair|#e6e6fa"
+    ミントグリーン髪: "mint green hair|#98ff98"
+    チョコレート髪: "chocolate brown hair|#7b3f00"
+    シャンパンゴールド髪: "champagne hair|#f7e7ce"
+  特殊:
+    宇宙・銀河髪: "galaxy hair, nebula colors|#4b0082"
+    ネオン髪: "neon hair, glowing color|#39ff14"
+    パステル髪: "pastel hair, soft candy colors|#ffd1dc"
+    燃えるような髪: "fiery hair, burning orange|#ff8c00"
+    氷のような髪: "icy hair, frosted blue|#e0ffff"
+
+髪型:
+  ポニテ・ツインテ:
+    ポニーテール: "ponytail"
+    ハイポニーテール: "high ponytail"
+    サイドテール: "side ponytail"
+    ツインテール: "twintails"
+    おさげ: "low braids, pigtails"
+  ハーフアップ・編み込み・お団子:
+    ハーフアップ: "half updo"
+    三つ編み（一本）: "single braid"
+    お団子頭: "hair bun"
+    二つお団子（シニヨン）: "double bun"
+    縦ロール（ドリル）: "drill hair"
+  ショート・ボブ:
+    ショートボブ: "short bob cut"
+    ボブカット: "bob cut"
+    お姫様カット: "hime cut"
+    ウルフカット: "wolf cut, layered hair"
+  前髪・パーツ:
+    ぱっつん前髪: "blunt bangs"
+    センター分け: "parted bangs"
+    おでこ出し: "forehead"
+  特殊スタイル・質感:
+    オールバック: "slicked back hairstyle"
+    ドレッドヘア: "dreadlocks"
+    アフロヘアー: "Afro"
+    寝癖（ルーズ）: "bedhead, messy hair"
+    触角（アホ毛）: "ahoge, antenna hair"

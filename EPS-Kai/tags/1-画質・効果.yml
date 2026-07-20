@@ -1,0 +1,56 @@
+アングル:
+  正面: "front view"
+  背面・後ろから: "from behind"
+  俯瞰（上から）: "from above"
+  ローアングル: "low angle shot"
+  自撮り: "selfie"
+  斜め前方（黄金比）: "three-quarter view"
+
+画角・レンズ:
+  超広角: "very wide shot"
+  中望遠（ポートレート）: "85mm lens"
+  マクロレンズ（極至近距離）: "macro lens"
+  チルトシフト（ミニチュア風）: "tilt-shift photography, toy-like scale"
+
+構図・フレーミング:
+  全身: "full body"
+  上半身（胸から上）: "upper body"
+  特定の部位クローズアップ: "close-up"
+  背景重視（引きの絵）: "wide shot, high-angle framing"
+  主観視点（FPS風）: "first-person perspective, hand in frame"
+
+コマ数:
+  2コマ: "2koma,sequential art"
+  コミック3コマ: "manga panel, comic strip, multi-panel, 3panels"
+
+フォーカス (Focus):
+  対象:
+    一人にフォーカス: "solo focus, single focus"
+    キャラクターフォーカス: "character focus"
+  部位別（精密射撃）:
+    顔にフォーカス: "face focus"
+    瞳にフォーカス: "eye focus"
+  特殊演出（空気感）:
+    背景ボケ（強め）: "strong bokeh, blurred background"
+    ソフトフォーカス（幻想的）: "soft focus, dreamlike blur"
+
+自然光:
+  明るい自然光: "bloom, bright sunlight"
+  木漏れ日: "dappled sunlight, sunbeams through leaves"
+  日没（ゴールデンアワー）: "golden hour, warm lighting"
+  月明かり: "moonlight, lunar glow"
+  霧の中の光（チンダル現象）: "volumetric fog, ethereal lighting"
+
+ライティング:
+  逆光: "backlighting, rim lighting"
+  スポットライト: "spotlight, focused beam"
+  シネマ: "cinematic lighting, movie scene"
+  ネオンサインの照り返し: "neon lighting, cyberpunk glow, city lights"
+  キャンドルの灯火: "candlelight, flickering warm glow"
+
+アートスタイル:
+  和風（ジャパニーズ）: "japanese style, traditional"
+  サイバーパンク: "cyberpunk, neon city"
+  大正ロマン: "taisho era style, retro-modern japanese"
+  レトロフューチャー: "retro-futurism, 1950s sci-fi"
+  ダークファンタジー: "dark fantasy, grim"

@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EPS-Kai & 匠エディタ 完全ドキュメントポータル</title>
+<style>
+:root{
+    --bg:#0f172a;
+    --panel:#111827;
+    --panel2:#1e293b;
+    --line:#334155;
+    --text:#e2e8f0;
+    --sub:#94a3b8;
+    --blue:#3b82f6;
+    --red:#ef4444;
+    --yellow:#facc15;
+    --green:#10b981;
+    --purple:#8b5cf6;
+    --takumi:#fb923c;
+    --editing:#f43f5e;
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{ margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.9; }
+.wrapper{ display:flex; min-height:100vh; }
+.sidebar{ width:320px; background:#020617; border-right:1px solid var(--line); padding:26px; position:sticky; top:0; height:100vh; overflow:auto; }
+.logo-container { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.logo-badge { background: var(--takumi); color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 900; font-size: 1.1rem; }
+.logo{ font-size:1.8rem; font-weight:800; color: white; }
+.logo-sub{ color:var(--sub); font-size:0.85rem; margin-bottom:30px; padding-left: 2px; }
+.menu-group{ margin-bottom:34px; }
+.menu-title{ color:var(--takumi); font-size:0.85rem; letter-spacing:0.08em; margin-bottom:12px; font-weight:bold; text-transform:uppercase; }
+.menu a{ display:block; color:#cbd5e1; text-decoration:none; padding:10px 14px; border-radius:10px; margin-bottom:6px; font-size: 0.9rem; transition:all 0.2s ease; border:1px solid transparent; }
+.menu a.active{ background:#2563eb; color:white; transform:translateX(4px); box-shadow:0 0 12px rgba(37,99,235,0.35); }
+.menu a:hover{ background:#111827; border-color:#1e293b; transform:translateX(4px); }
+.content{ flex:1; padding:50px; max-width:1400px; }
+.hero{ background:linear-gradient(135deg,#111827,#1e293b); border:1px solid var(--line); border-radius:28px; padding:50px; margin-bottom:40px; overflow:hidden; position:relative; }
+.hero::after{ content:""; position:absolute; width:380px; height:380px; background:radial-gradient(circle,rgba(251,146,60,0.15),transparent 70%); right:-120px; top:-120px; }
+.hero h1{ font-size:2.8rem; margin:0 0 14px; color: white; }
+.hero p{ max-width:900px; color:#cbd5e1; }
+.card{ background:var(--panel); border:1px solid var(--line); border-radius:24px; padding:38px; margin-bottom:32px; }
+h2{ color:#7dd3fc; margin-top:0; font-size:2rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+h3{ margin-top:34px; color:white; font-size: 1.3rem; }
+p{ color:#cbd5e1; }
+.code{ background:#020617; border:1px solid var(--line); border-radius:14px; padding:18px; font-family:Consolas,monospace; white-space:pre-wrap; overflow:auto; margin:18px 0; color:#93c5fd; }
+.point,.warn,.good,.quote{ border-radius:16px; padding:18px 20px; margin:24px 0; }
+.point{ background:rgba(56,189,248,0.08); border-left:4px solid var(--blue); }
+.warn{ background:rgba(239,68,68,0.08); border-left:4px solid var(--red); }
+.good{ background:rgba(16,185,129,0.08); border-left:4px solid var(--green); }
+.quote{ background:rgba(251,146,60,0.08); border-left:4px solid var(--takumi); }
+.demo-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; margin-top:20px; }
+.demo-card{ background:#0f172a; border:1px solid var(--line); border-radius:18px; padding:20px; }
+.btn-demo{ display:inline-flex; align-items: center; gap: 6px; padding:6px 12px; border-radius:4px; color:white; font-weight:bold; margin-top:12px; font-size: 0.85rem; font-family: sans-serif; border:1px solid rgba(255,255,255,0.1); }
+.pos-left{ background:linear-gradient(to right, #2563eb 0%, rgba(37,99,235,0.2) 100%); border-color: rgba(37,99,235,0.45); }
+.pos-right{ background:linear-gradient(to left, #2563eb 0%, rgba(37,99,235,0.2) 100%); border-color: rgba(37,99,235,0.45); }
+.neg-left{ background:linear-gradient(to right, #dc2626 0%, rgba(220,38,38,0.2) 100%); border-color: rgba(220,38,38,0.45); }
+.neg-right{ background:linear-gradient(to left, #dc2626 0%, rgba(220,38,38,0.2) 100%); border-color: rgba(220,38,38,0.45); }
+.pos-both{ background:#2563eb; border-color: #3b82f6; }
+.neg-both{ background:#dc2626; border-color: #ef4444; }
+.warn-left{ background:repeating-linear-gradient(45deg,rgba(139, 92, 246, 0.45),rgba(139, 92, 246, 0.45) 8px,rgba(167, 139, 250, 0.45) 8px,rgba(167, 139, 250, 0.45) 16px); border-color: #8b5cf6; }
+.warn-right{ background:repeating-linear-gradient(45deg,rgba(139, 92, 246, 0.45),rgba(139, 92, 246, 0.45) 8px,rgba(167, 139, 250, 0.45) 8px,rgba(167, 139, 250, 0.45) 16px); border-color: #8b5cf6; }
+table{ width:100%; border-collapse:collapse; margin-top:20px; }
+th,td{ border:1px solid var(--line); padding:14px; text-align:left; font-size: 0.95rem; }
+th{ background:#1e293b; color: white; }
+.flow{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:20px; }
+.flow-item{ background:#0f172a; border:1px solid var(--line); border-radius:18px; padding:20px; }
+.small{ color:var(--sub); font-size:0.85rem; margin-top: 8px; }
+.section-anchor{ position:relative; top:-30px; }
+ul.simple-list { padding-left: 20px; margin: 10px 0; }
+ul.simple-list li { margin-bottom: 6px; color: #cbd5e1; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<aside class="sidebar">
+    <div class="logo-container">
+        <div class="logo-badge">匠</div>
+        <div class="logo">EPS-Kai</div>
+    </div>
+    <div class="logo-sub">Documentation Portal</div>
+
+    <div class="menu-group">
+        <div class="menu-title">操作マニュアル</div>
+        <div class="menu">
+            <a class="nav-link" href="#manual-intro-yaml">0. YAMLの基本構築（超基礎）</a>
+            <a class="nav-link" href="#manual-launcher">1. 導入コントロールパネル</a>
+            <a class="nav-link" href="#manual-click">2. 左右クリックとマクロ (NM/RM)</a>
+            <a class="nav-link" href="#manual-color">3. プロンプト登録状態と色ルール</a>
+            <a class="nav-link" href="#manual-thumb">4. サムネイルと表示パターン全網羅</a>
+            <a class="nav-link" href="#manual-visual-layer">5. 可視化レイヤー詳細解説</a>
+            <a class="nav-link" href="#manual-search">6. 検索・+Prompt・一括抽出・Fav機能</a>
+            <a class="nav-link" href="#manual-world">7. EPS-Kaiの世界構築</a>
+        </div>
+    </div>
+
+    <div class="menu-group">
+        <div class="menu-title">匠エディタ解説</div>
+        <div class="menu">
+            <a class="nav-link" href="#editor-overview">1. 匠エディタ概要</a>
+            <a class="nav-link" href="#editor-initial-setup">2. 開始前の大前提：ファイルの物理準備</a>
+            <a class="nav-link" href="#editor-layout">3. 基本画面構成</a>
+            <a class="nav-link" href="#editor-text">4. 独立稼働: プロンプト編集</a>
+            <a class="nav-link" href="#editor-image">5. 独立稼働: サムネ投入</a>
+            <a class="nav-link" href="#editor-safe">6. 鉄壁の保存前重複禁則ガード</a>
+            <a class="nav-link" href="#editor-global-actions">7. 画面右上グローバルアクション (大枠の操作)</a>
+            <a class="nav-link" href="#editor-cat-buttons">8. カテゴリ内アクション (5大ボタン)</a>
+            <a class="nav-link" href="#editor-stock-yard">9. 待機ストックヤード（A系：組み立て流儀）</a>
+            <a class="nav-link" href="#editor-express-fav">10. 特急取り込みシステム（B系：特急流儀）</a>
+            <a class="nav-link" href="#editor-new-file">11. 📄 新規YAMLファイル作成システム</a>
+        </div>
+    </div>
+
+    <div class="menu-group">
+        <div class="menu-title">技術仕様書 & 規約</div>
+        <div class="menu">
+            <a class="nav-link" href="#tech-structure">1. 3層アーキテクチャ</a>
+            <a class="nav-link" href="#tech-yaml">2. YAML & 禁則仕様</a>
+            <a class="nav-link" href="#tech-state">3. 双方向通信システム</a>
+            <a class="nav-link" href="#tech-metadata">4. Selected_Index：日本語ボタン完全復元</a>
+            <a class="nav-link" href="#tech-format">5. YAMLデータ構築・複合ルール</a>
+            <a class="nav-link" href="#tech-master">6. 拡張性：マスターマップでのフラグ追加</a>
+            <a class="nav-link" href="#tech-end">7. なぜこの構造なのか</a>
+            <a class="nav-link" href="#tech-copyright">8. 【最厳重】ライセンスと誓約事項</a>
+        </div>
+    </div>
+</aside>
+
+<main class="content">
+
+<section class="hero">
+    <h1>EPS-Kai Documentation</h1>
+    <p>EPS-Kai（イージー・プロンプト・セレクター・改）は、YAMLに登録された構文やマクロ構造を整理し、Stable Diffusion用プロンプトの組み立て・生成環境そのものを構築していくための強力なアドオンシステムです。</p>
+    <p>本ドキュメントは、「操作マニュアル」「匠エディタ解説」「エンジニア向けの技術仕様書」の3つの階層で構成されています。</p>
+    <div class="quote">最初は “ボタンをぽちぽち押す” だけで大丈夫です。しかし触っていくうちに、「ここを自分好みに増やしたい」「独自のランダム（RM）を仕込みたい」という制作欲求へ、驚くほど自然にステップアップできる設計になっています。</div>
+</section>
+
+<div class="section-anchor" id="manual-intro-yaml"></div>
+<section class="card">
+<h2>0. YAMLの基本構築（超基礎）</h2>
+<p>本システムは <strong>「YAML（ヤムル）」</strong> という非常に単純なテキストファイルに沿ってすべてのボタンを表示しています。「YAMLなんて聞いたこともない！」という場合でも、以下のルールさえ理解すれば一瞬で自分用のボタンを作成できます。</p>
+<h3>① ドノーマルな登録（1行に1タグ）</h3>
+<p>もっとも単純な書き方です。左側に<strong>「ボタンに表示させたい日本語（名前）」</strong>、右側にコロン <code>:</code> とダブルクォート <code>""</code> で挟んだ<strong>「実際の英語プロンプト（呪文）」</strong>を書きます。</p>
+<pre class="code">正面: "straight"
+笑顔: "smile"</pre>
+<div class="point">コロン（ <code>:</code> ）の後ろには、<strong>必ず「半角スペース」を1個空ける</strong>という鉄の約束事があります。これを忘れるとエラーになってしまいます。</div>
+<h3>② カテゴリ（アコーディオン）による階層化</h3>
+<p>アコーディオンフォルダのようにすっきり「たたんで整理」するために、以下のようにインデント（行頭の半角スペース2文字）で親子構造を作ります。</p>
+<pre class="code">アングル:
+  正面: "straight"
+  背後: "back view"</pre>
+<p>これで画面上には「アングル」という名のオレンジ色のカテゴリフォルダが作られ、中に「正面」「背後」のボタンが綺麗に格納されます。</p>
+<ul class="simple-list">
+    <li><strong>さらに深く分ける（多層構造）：</strong><br>スペース4つ、6つと増やすことで、何階層でもフォルダの中にフォルダを作ることができます。<a href="#tech-format" style="color:var(--takumi);">＞多層構築の詳細なルールへ飛ぶ</a></li>
+    <li><strong>フラグ（C/S/O/E）や色を付ける：</strong><br>ボタンに衣服 <code>[O]</code> などのアイコンを付けたり、ボタンの横にカラーパレットを表示する高度な表現も、1行の書き方次第で自由自在に拡張できます。<a href="#tech-format" style="color:var(--takumi);">＞フラグ・カラー指定の詳細解説へ飛ぶ</a></li>
+</ul>
+</section>
+
+<div class="section-anchor" id="manual-launcher"></div>
+<section class="card">
+<h2>1. 導入コントロールパネル (5大ボタン)</h2>
+<p>EPS-Kaiをシステムに導入すると、WebUI上に生成環境を管理するための5つのコアコントロールボタンが出現します。（※おまけ機能のラジオ展開ボタン「📻」については後述します）</p>
+<div class="flow" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+    <div class="flow-item" style="text-align: center;"><div class="btn-demo" style="background: var(--panel2); border-color: var(--line); margin-top: 0; padding: 8px 16px;">❇️展開</div><h3 style="margin-top: 15px; font-size: 1.05rem;">セレクター開閉</h3><p class="small">EPS-Kai のメインパネルを展開・格納します。</p></div>
+    <div class="flow-item" style="text-align: center;"><div class="btn-demo" style="background: var(--panel2); border-color: var(--line); margin-top: 0; padding: 8px 16px;">🖍️編集</div><h3 style="margin-top: 15px; font-size: 1.05rem;">匠エディタ起動</h3><p class="small">ビジュアル編集モード・匠エディタを全画面で起動します。</p></div>
+    <div class="flow-item" style="text-align: center;"><div class="btn-demo" style="background: var(--panel2); border-color: var(--line); margin-top: 0; padding: 8px 16px;">🔁更新</div><h3 style="margin-top: 15px; font-size: 1.05rem;">キャッシュ同期</h3><p class="small">YAMLや画像キャッシュを同期。Shift+クリックでキャッシュを全初期化して完全再スキャンします。</p></div>
+    <div class="flow-item" style="text-align: center;"><div class="btn-demo" style="background: var(--panel2); border-color: var(--line); margin-top: 0; padding: 8px 16px;">保存</div><h3 style="margin-top: 15px; font-size: 1.05rem;">キャッシュバックアップ</h3><p class="small">画像存在キャッシュ情報をバックアップファイル（JSON）としてPCへ保存します。</p></div>
+    <div class="flow-item" style="text-align: center;"><div class="btn-demo" style="background: var(--panel2); border-color: var(--line); margin-top: 0; padding: 8px 16px;">読込</div><h3 style="margin-top: 15px; font-size: 1.05rem;">キャッシュ復元</h3><p class="small">保存したバックアップファイルを読み込んで画像ステータス情報をその場で復元します。</p></div>
+</div>
+</section>
+
+<div class="section-anchor" id="manual-click"></div>
+<section class="card">
+<h2>2. 左右クリックとマクロ (NM/RM) の全挙動</h2>
+<p>EPS-Kaiの特徴は、ボタンが単なる「ON / OFF」ではなく、<strong>「どのボタンを、左右どちらのクリックで登録したか」</strong>によって挙動がスマートに切り替わる点にあります。以下がその全パターンの網羅です。</p>
+<h3>① 単一ボタンのクリック挙動</h3>
+<div class="demo-grid">
+    <div class="demo-card"><h4 style="color:#60a5fa; margin-top:0;">左クリック (実構文入力)</h4><p class="small">登録された「英語のプロンプトテキスト」をそのままテキストエリアへ流し込みます。</p><div class="code">入力例: 1girl, blue eyes, smile</div></div>
+    <div class="demo-card"><h4 style="color:#facc15; margin-top:0;">右クリック (マクロ参照入力)</h4><p class="small">プロンプトへは実構文ではなく、日本語の「ボタン名」を参照するマクロ構文を送信します。後からYAMLの実構文を変更しても生成情報が崩れません。</p><div class="code">入力例: %%青目%%, %%笑顔%%</div></div>
+</div>
+<h3 style="margin-top: 30px;">② フォルダ/カテゴリボタン of クリック挙動 (NM / RM)</h3>
+<p>複数のボタンを束ねている「カテゴリの親ボタン」をクリックした場合、強力な一括流し込み（NM）やランダム抽選（RM）が発動します。</p>
+<div class="demo-grid">
+    <div class="demo-card"><h4 style="color:#60a5fa; margin-top:0;">カテゴリを 左クリック (NM: Normal Macro)</h4><p class="small">そのカテゴリ配下にある<strong>すべてのプロンプトを一斉に展開して流し込みます。</strong>キャラクターの衣装セット全部位などを一撃で入力する際に使います。</p><div class="code">入力例: red shirt, blue skirt, black socks, brown shoes</div></div>
+    <div class="demo-card"><h4 style="color:#facc15; margin-top:0;">カテゴリを 右クリック (RM: Random Macro)</h4><p class="small">カテゴリ配下の候補から<strong>「生成のたびに完全にランダムで1つだけ」を抽選するランダムマクロ</strong>を構築します。</p><div class="code">入力例: %%@表情:笑顔系@%%</div></div>
+</div>
+<div class="point"><strong>💡 RM（ランダム）の別の書き方</strong><br>カテゴリの右クリックだけでなく、単一ボタンのプロンプト登録枠に直接 %% <code>笑顔 ;; 怒り ;; 悲しみ %%</code> のように <strong>ダブルコロン ( <code>;;</code> )</strong> で区切ってテキストを記述しても、自動的にランダム抽選（RM）として機能します。（大外を%２つづつで囲う必要があります）</div>
+</section>
+
+<div class="section-anchor" id="manual-color"></div>
+<section class="card">
+<h2>3. プロンプト登録状態と色ルール</h2>
+<p>ボタンが今「どこに」「どうやって」登録されているかは、ボタンのグラデーション色だけで瞬時に判断できるようデザインされています。</p>
+<table>
+<thead><tr><th>ボタン外観</th><th>現在の登録ステータス</th><th>解説</th></tr></thead>
+<tbody>
+<tr><td><span class="btn-demo pos-left"><span style="color:#3b82f6;">◇</span> 青目</span></td><td>ポジティブ：左登録（実構文）</td><td>ポジティブプロンプトへ通常登録されています。</td></tr>
+<tr><td><span class="btn-demo pos-right"><span style="color:#3b82f6;">◇</span> 青目</span></td><td>ポジティブ：右登録（マクロ）</td><td>ポジティブプロンプトへマクロ（%%形式%%）で登録されています。</td></tr>
+<tr><td><span class="btn-demo neg-left"><span style="color:#dc2626;">◇</span> 悪い手</span></td><td>ネガティブ：左登録（実構文）</td><td>ネガティブプロンプトへ直接実構文が流し込まれています。</td></tr>
+<tr><td><span class="btn-demo neg-right"><span style="color:#dc2626;">◇</span> 悪い手</span></td><td>ネガティブ：右登録（マクロ）</td><td>ネガティブプロンプトへマクロ形式で登録されています。</td></tr>
+<tr><td><span class="btn-demo pos-both"><span style="color:white;">◇</span> 青目</span></td><td>ポジティブ：両登録（左右）</td><td>左登録と右登録の両方が、同じプロンプト内で重複登録されています。</td></tr>
+<tr><td><span class="btn-demo neg-both"><span style="color:white;">◇</span> 悪い手</span></td><td>ネガティブ：両登録（左右）</td><td>ネガティブ側で左右両方が同時に登録されています。</td></tr>
+<tr><td><span class="btn-demo warn-left"><span style="color:white;">◇</span> 矛盾</span></td><td>ポジネガ重複警告（コンフリクト）</td><td>同じタグがポジティブとネガティブの両方に登録されている場合に発動する、紫のストライプ警告です。押し間違いを防ぎます。</td></tr>
+</tbody>
+</table>
+</section>
+
+<div class="section-anchor" id="manual-thumb"></div>
+<section class="card">
+<h2>4. サムネイルと表示パターン全網羅</h2>
+<p>EPS-Kaiのサムネイルおよびボタンマーク（◇や★など）の表示は、<strong>「フラグの有無」と「実在する画像ファイル」</strong>の組み合わせによって完璧に制御されています。<br>以下の表は、その全ての表示パターンを網羅したものです。</p>
+<table>
+<thead><tr><th>ボタンの設定</th><th>フォルダ内の画像状況</th><th>ボタンの見た目</th><th>ホバー時のサムネイル表示</th></tr></thead>
+<tbody>
+<tr><td rowspan="3" style="background: rgba(59,130,246,0.1);"><strong>フラグありボタン</strong><br><span style="font-size:0.85rem; color:var(--sub);">例：<code>にっこり [C]</code></span></td><td>画像なし</td><td><span style="font-weight:900;">◇</span> にっこり 👤</td><td>（NO IMAGE プレースホルダー）</td></tr>
+<tr><td><code>にっこり.png</code><br><span style="font-size:0.8rem; color:var(--sub);">(汎用画像のみ)</span></td><td><span style="color:var(--yellow); font-weight:900;">★</span> にっこり 👤</td><td>汎用画像（<code>にっこり.png</code>）を表示</td></tr>
+<tr><td><code>にっこり [C].png</code><br><span style="font-size:0.8rem; color:var(--sub);">(専用画像あり)</span></td><td><span style="color:var(--blue); font-weight:900;">◉</span> にっこり 👤</td><td>専用画像（<code>にっこり [C].png</code>）を表示</td></tr>
+<tr><td rowspan="3" style="background: rgba(255,255,255,0.03);"><strong>フラグなしボタン</strong><br><span style="font-size:0.85rem; color:var(--sub);">例：<code>正面</code></span></td><td>画像なし</td><td>正面 <span style="font-size:0.75rem; color:var(--sub);">(※マーク一切なし)</span></td><td>（サムネイル検索自体が起動しない）</td></tr>
+<tr><td><code>正面.png</code><br><span style="font-size:0.8rem; color:var(--sub);">(汎用画像のみ)</span></td><td><span style="color:var(--yellow); font-weight:900;">★</span> 正面</td><td>汎用画像（<code>正面.png</code>）を表示</td></tr>
+<tr><td><code>正面 [S].png</code><br><span style="font-size:0.8rem; color:var(--sub);">(専用画像あり)</span></td><td><span style="color:var(--green); font-weight:900;">◉</span> 正面</td><td>専用画像（<code>正面 [S].png</code>）を表示</td></tr>
+</tbody>
+</table>
+<div class="good"><strong>💡 視覚的ノイズを減らす「フラグなし」の恩恵</strong><br>表の下半分（フラグなしボタン）に注目してください。<strong>フラグがなくても、画像を用意しさえすれば「★」や「◉」が付き、サムネイルは完璧に動作します。</strong><br>逆に、画像を用意していない時は「◇」すら表示されず、ただのテキストボタンとしてスッキリ表示されます。画面上のノイズを減らしたい場合は、あえてフラグを付けない運用も非常に有効です！</div>
+◉ 画像を何枚も用意するのが面倒な場合は一旦汎用を登録しておき、お気に入り画像が生成できたら専用を登録するなどの運用がオススメです。
+</section>
+
+<div class="section-anchor" id="manual-search"></div>
+<section class="card">
+<h2>6. 検索機能・+Prompt・一括抽出・Fav（お気に入り）機能</h2>
+<p>ボタンが増えるほど威力を発揮するのが、強力なフロントエンド検索と履歴機能、およびヘビロテボタンを一瞬で呼び出せるお気に入りシステムです。</p>
+<h3>🔍 検索窓と「+Prompt」チェックボックス</h3>
+<p>検索窓の横にある <strong><code>+Prompt</code></strong> チェックボックスのON/OFFで、検索対象をスマートに切り替えることができます。</p>
+<ul class="simple-list">
+    <li><strong>OFF (デフォルト):</strong> 「ボタン名（例：<code>笑顔</code>）」のみを検索対象にします。UI上のボタンを探したい時にノイズなくスッキリと検索できます。</li>
+    <li><strong>ON (チェックあり):</strong> ボタン名に加えて、内部に登録されている「英語のプロンプト構文（例：<code>smile</code>）」も検索対象に含めます。英語のタグ名しか思い出せない時に非常に便利です。</li>
+</ul>
+<h3>🎯 100%漏れなき「一括抽出マクロ」と表示上限</h3>
+<ul class="simple-list">
+    <li><strong>検索結果表示の上限設定:</strong> 検索結果のボタン表示件数は、ブラウザレンダリングの過負荷（プチフリーズ）を防ぐため<strong>最大100件までに制限（カットオフ）</strong>されています。</li>
+    <li><strong>一括マクロは100%送信:</strong> 表示が100件に制限されている場合でも、検索窓の下に出現する「検索結果（◯件）」の統合マクロボタンをクリックして送信されるマクロ（<code>%%SEARCH:ワード%%</code>）は、<strong>非表示になっているものも含めた「条件にマッチした全ボタン内容（100%）」をサーバー側ですべて漏れなく展開・流し込み</strong>を行います。安心して一括抽出をご利用ください。</li>
+</ul>
+<h3>💖 ヘビロテボタンを最速展開する「Fav（お気に入り）機能」</h3>
+<p>
+頻繁に使用するお気に入りのプロンプトやマクロボタンを、カテゴリやタブの垣根を越えて一箇所にまとめることができる機能です。
+</p>
+<ul class="simple-list">
+    <li><strong>最上位への常駐：</strong> お気に入りに登録されたボタンは、メインパネル最上部に新設される専用の「Favエリア」に自動的に集約・常駐します。</li>
+    <li><strong>お気に入り編集モードの切り替え：</strong>
+        「Fav:」ラベルの横にある「編集」ボタンをクリックすると、ボタンが黄色く明るく光る「Fav編集モード」に移行します。
+        <ul>
+            <li><strong>追加する時：</strong> 編集モード中に、メインのカテゴリーからピン留めしたい任意のボタンを<strong>左クリック</strong>します。これだけでFav領域にピカッと追加されます。</li>
+            <li><strong>削除する時：</strong> 編集モード中に、Favエリア内にある不要なボタンを<strong>左クリック</strong>すると、即座に一覧から除外されます。</li>
+        </ul>
+        整理が終われば、もう一度「終了」ボタンを押して通常モードに戻します。
+    </li>
+    <li><strong>お気に入りボタンの通常稼働：</strong> 
+        Favエリアに常駐した一軍ボタンは、通常時以下のように反応します。
+        <div class="demo-grid" style="margin-top: 8px;">
+            <div class="demo-card" style="padding: 10px 14px;">
+                <h5 style="margin: 0 0 4px; color: #60a5fa; font-size: 0.85rem;">左クリック</h5>
+                <p class="small" style="margin:0;">Favエリアからそのまま実構文（例：<code>1girl</code>）をプロンプトへ流し込みます。</p>
+            </div>
+            <div class="demo-card" style="padding: 10px 14px;">
+                <h5 style="margin: 0 0 4px; color: #facc15; font-size: 0.85rem;">右クリック</h5>
+                <p class="small" style="margin:0;">Favエリアからお気に入りのマクロ参照（例：<code>%%1girl%%</code>）をプロンプトへ流し込みます。これにより実構文を後から書き換えても安全な統合制御を維持します。</p>
+            </div>
+        </div>
+    </li><br>
+    <li><strong>匠エディタへの特急取り込み（B系列）：</strong> 
+        本家EPSで登録したFavタグ群は、匠エディタの「B系列（例：favoriteB00）」を使用することで、<strong>ワンクリックでYAMLファイル内に新しいセットとしてそっくりそのまま流し込み・保存（特急登録）</strong>することが可能です。詳しくは<a href="#editor-express-fav" style="color:var(--takumi);">匠エディタ解説 10. 特急取り込みシステム</a>をご覧ください。
+    </li>
+</ul>
+</section>
+
+<div class="section-anchor" id="manual-world"></div>
+<section class="card">
+<h2>7. EPS-Kai の世界構築</h2>
+<p>このツールは「あらかじめ用意されたデータを使う」だけのものではありません。髪型、表情、ポーズ、衣服、ライティング、お気に入りの画質設定、キャラクターLoRA……あなただけの「プロンプト設計図」をYAMLとして構築し、それを取り込むことで、Stable Diffusionをあなた専用の最強のAIスタジオへとカスタマイズしていく、そのために存在しています。</p>
+</section>
+
+
+<div class="section-anchor" id="editor-overview"></div>
+<section class="card">
+<h2>匠エディタ 1. エディタ概要</h2>
+<p>YAMLデータを直接テキストエディタで書き換えるのは、インデントのズレ（YAML構文エラー）や、タイポ、上書きミスの原因になります。<strong>「匠エディタ」</strong>は、WebUI内部で稼働する、YAMLおよびサムネイル画像のビジュアル・オーサリング環境です。</p>
+<div class="point">「EPS-Kai本体」がプロンプトを使用するUIであるなら、「匠エディタ」はあなたの生成環境を強力に**育成・拡張**するためのエディタです。</div>
+</section>
+
+<div class="section-anchor" id="editor-initial-setup"></div>
+<section class="card">
+<h2>匠エディタ 2. 開始前の大前提：ファイルの物理準備</h2>
+<p class="warn">
+<strong>🚨 【初見殺しを回避するための超重要事項】</strong><br>
+匠エディタ上で新規にお気に入りパレットを編集・構築、あるいは本家EPSから特急取り込みを行うためには、<strong>最初から対象のYAMLファイル（物理ファイル）がディスク上に用意されているか、後述する「📄新規作成」ボタンからファイルを作成しておく必要があります。</strong>
+</p>
+<div class="warn" style="border-left-width: 8px;">
+    <h3 style="margin-top:0; color:white; font-size:1.25rem;">⚠️ お気に入り用ファイル名「favorite」の絶対命名ルール</h3>
+    <p style="font-size:0.9rem; line-height:1.7;">
+    匠エディタおよびEPS-Kai本体でお気に入り機能（A系列、B系列等）を使用するための物理YAMLファイルは、必ず以下の厳格なフォーマットに従って命名してください。
+    </p>
+    <div class="code" style="color: #fca5a5; background: #1e1b4b; border-color: #7f1d1d;">
+【命名形式】 favorite[英字1文字][数字2桁].yml
+（例）favoriteA00.yml, favoriteA01.yml, favoriteB00.yml, favoriteB05.yml
+    </div>
+    <p style="font-size:0.9rem; line-height:1.7; margin-bottom: 0;">
+    <strong>※【警告】</strong>システムの読み込み判定・プルダウン抽出・保存プログラムは、この正規表現（英字1文字＋数字2桁）を厳しくチェックしています。
+    <code>favA00.yml</code> や <code>favoriteA0.yml</code>、あるいは日本語が含まれるファイル名といった**ルール違反のファイル名はシステムによって完全に無視（非表示・非接続）**されます。
+    </p>
+</div>
+◉ 処理の都合デフォルトでAとBに分けており、Bが特急専用フラグとしていますが、お気に入り登録については、A,C~Z＋00〜99のファイル名に対応しているので、自分なりのルールでお使いください。（Cは背景、Fはポーズ、＠15は特別なルール・・・・など）
+</section>
+
+<div class="section-anchor" id="editor-layout"></div>
+<section class="card">
+<h2>匠エディタ 3. 基本画面構成</h2>
+<p>「🖍️編集」ボタンを押すと、画面全体を暗転させてクリエイターモードへ移行します。画面は上下に分割されており、効率的な編集作業を可能にしています。</p>
+<div class="flow">
+    <div class="flow-item"><h3 style="color:var(--success);">上部：Viewerエリア</h3><p class="small">YAML内のカテゴリ（セクション）が美しく一覧表示されます。開閉（アコーディオン）や、ドラッグでの縦幅リサイズが可能です。</p></div>
+    <div class="flow-item"><h3 style="color:var(--success);">下部：Editorエリア</h3><p class="small">選択したアイテムの「名称(YAML KEY)」「フラグ(C/S/O/E)」「実行プロンプト」を直接書き換える、高機能な編集フォームです。</p></div>
+    <div class="flow-item"><h3 style="color:var(--success);">右側：Thumbnailエリア</h3><p class="small">サムネイル画像をドラッグ＆ドロップでドロップ可能。保存名がリアルタイムに表示され、画像のみの瞬時保存にも対応しています。</p></div>
+</div>
+</section>
+
+<div class="section-anchor" id="editor-text"></div>
+<section class="card">
+<h2>匠エディタ 4. 独立稼働: プロンプト編集機能</h2>
+<p>「ボタンの名前を変えたい」「内部のプロンプト（英語）を修正したい」「フラグ（C/S/O/E）を切り替えたい」というテキスト・設定ベース of 編集機能です。</p>
+<ul class="simple-list">
+    <li>ターゲットを選択し、フォームを書き換えます。</li>
+    <li><strong>画像（サムネイル）を用意していなくても、この機能単独で「💾 保存」が可能です。</strong></li>
+    <li>保存した瞬間にYAMLが書き換わり、プロンプトの出力内容が即座にアップデートされます。</li>
+</ul>
+</section>
+
+<div class="section-anchor" id="editor-image"></div>
+<section class="card">
+<h2>匠エディタ 5. 独立稼働: 超高速サムネ投入機能</h2>
+<p>「テキストはそのままでいいから、サムネイル画像だけを追加・更新したい」という場合に特化した、ドラッグ＆ドロップ機能です。</p>
+<ul class="simple-list">
+    <li>右側の円形ドロップゾーンへ、画像をポイッとドラッグ＆ドロップします。</li>
+    <li>どんなに大きな解像度の画像でも、ブラウザの機能を使って「最高品質（ランチョス風）」で <code>320x320</code> のPNGへとその場で自動圧縮されます。</li>
+    <li><strong>「📷 画像のみを保存」を押すことで、YAML（テキスト）には一切触れず、画像ファイルだけを瞬時に生成・上書きします。</strong></li>
+    <li>保存された瞬間にEPS-Kaiの画像キャッシュが上書きされ、Viewerエリアの <code>◇</code> マークがその場で一瞬で色付き of <code>◉</code> マークへと自動変身します！</li>
+</ul>
+</section>
+
+<div class="section-anchor" id="editor-safe"></div>
+<section class="card">
+<h2>匠エディタ 6. 鉄壁の保存前重複禁則ガード</h2>
+<p>匠エディタの安全設計は、入力フォームとセーブロジックの両方に強力なロックをかけてミスを完全に封殺します。</p>
+<h3>① 重複エラーバナー & 保存ボタン無効化</h3>
+<p>同じカテゴリ内にすでに存在する名前（KEY）を入力しようとすると、画面上部に警告バナーが表示され、<strong>保存ボタン（💾 保存）が自動的に無効化（グレーアウト・不透過度0.4）</strong>されます。</p>
+<div class="warn">重複エラー：「にっこり [C]」は既に使用されています。</div>
+<h3>② 鉄壁のセーブプログラム防衛（禁則ガード）</h3>
+<p>万が一、無効状態のはずの保存ボタンが裏技的に呼び出されたとしても、<strong>プログラムの最前面において重複チェックを再検証し、セーブ動作そのものを瞬時に完全に遮断（禁則）</strong>します。これにより、意図しない不正上書きセーブやデータの破壊事故が完全にゼロになります。</p>
+</section>
+
+
+<div class="section-anchor" id="editor-global-actions"></div>
+<section class="card">
+<h2>匠エディタ 7. 画面右上グローバルアクション (大枠の操作)</h2>
+
+<p>
+右上の「匠」アイコンの真横に、<strong>ルート階層（一番外側のファイルレベル）の構造をダイナミックに変更するための3つのグローバルボタン</strong>が常駐しています。<br>
+これらはYAMLファイル全体の「皮むき」や「入れ子（ネスト）」を一瞬で実行する強力な機能です。
+</p>
+
+<div class="point">
+    <strong>💡 初見殺し回避ポイント</strong><br>
+    これらのボタンは「現在選択しているYAMLファイル全体」の構造に影響を与えます。もし意図しない結果になった場合は焦らず、もう一度「外枠を消す」などで構造を戻すことができます。
+</div>
+
+<div class="demo-grid" style="grid-template-columns: 1fr;">
+    
+    <div class="demo-card" style="border-left: 4px solid #0ea5e9;">
+        <h4 style="color:#38bdf8; margin-top:0; font-size: 1.15rem;">📦 すべてを新枠で包む</h4>
+        <p class="small" style="margin-bottom: 12px; color:#cbd5e1;">
+            現在のファイル内にある<strong>すべてのカテゴリを、新しい1つの大きなフォルダ（親カテゴリ）の中に移動</strong>させます。
+            ファイル内がごちゃごちゃしてきた時に、全体を一段深く（インデントを下げて）まとめたい場合に最適です。
+        </p>
+        <div class="code" style="background:#020617; color:#93c5fd; padding:12px; font-size:0.85rem;">
+<span style="color:#94a3b8;"># ▼ 実行前</span>
+髪型:
+  ショート: "short hair"
+服装:
+  シャツ: "shirt"
+
+<span style="color:#fbbf24;"># ▼ 実行後（例：「外見」という名前で包んだ場合）</span>
+外見:
+  髪型:
+    ショート: "short hair"
+  服装:
+    シャツ: "shirt"</div>
+    </div>
+
+    <div class="demo-card" style="border-left: 4px solid #f59e0b;">
+        <h4 style="color:#fbbf24; margin-top:0; font-size: 1.15rem;">📤 外枠を消す</h4>
+        <p class="small" style="margin-bottom: 12px; color:#cbd5e1;">
+            指定した<strong>一番外側のカテゴリ（外枠）を消滅させ、その中に入っていたサブカテゴリをルート（一番上）に展開</strong>します。
+            マトリョーシカの皮を一枚剥がすようなイメージで、中のデータは一切消えません。<br>
+            ※展開先に同じ名前のカテゴリが既に存在する場合は、上書き破壊を防ぐための安全ガードが作動し、処理が中断されます。
+        </p>
+        <div class="code" style="background:#020617; color:#93c5fd; padding:12px; font-size:0.85rem;">
+<span style="color:#94a3b8;"># ▼ 実行前</span>
+外見:
+  髪型:
+    ショート: "short hair"
+  服装:
+    シャツ: "shirt"
+
+<span style="color:#fbbf24;"># ▼ 実行後（例：「外見」の外枠を消した場合）</span>
+髪型:
+  ショート: "short hair"
+服装:
+  シャツ: "shirt"</div>
+    </div>
+
+    <div class="demo-card" style="border-left: 4px solid #10b981;">
+        <h4 style="color:#34d399; margin-top:0; font-size: 1.15rem;">💡 大枠を新設</h4>
+        <p class="small" style="margin-bottom: 12px; color:#cbd5e1;">
+            現在選択しているファイルの<strong>一番外側の階層（ルート）に、まったく新しい空のカテゴリーを追加</strong>します。
+            全く新しいジャンルを作り始めたい時の起点として使用します。
+        </p>
+    </div>
+
+</div>
+</section>
+
+<div class="section-anchor" id="editor-cat-buttons"></div>
+<section class="card">
+<h2>匠エディタ 8. カテゴリ内アクション (5大ボタン)</h2>
+
+<p>
+各アコーディオン見出し（カテゴリーバー）の右端に配置されている5つのボタンです。
+これらは<strong>「そのアコーディオン（カテゴリ）」と「その直近の階層」</strong>を局所的にコントロールするための機能です。
+</p>
+
+<div class="flow" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <div class="flow-item" style="border-top: 3px solid #cbd5e1; padding-top: 15px;">
+        <strong style="color:var(--text);">✏️ カテゴリ名修正</strong>
+        <p class="small">現在のアコーディオンのカテゴリー名を即座にリネームします。配下の入れ子データは一切壊さず安全にリネームされます。</p>
+    </div>
+    
+    <div class="flow-item" style="border-top: 3px solid var(--takumi); padding-top: 15px;">
+        <strong style="color:var(--takumi);">💡 次へ新設</strong>
+        <p class="small">このカテゴリーと<strong>同じ深さ（並列）</strong>に、新しい空のカテゴリーを作成します。兄弟フォルダを作るイメージです。</p>
+        <div class="code" style="font-size:0.75rem; padding:8px; margin-top:8px;">
+アングル:
+  正面: "straight"
+<span style="color:#fb923c;">ポーズ: {}</span> # ←ここに作られる</div>
+    </div>
+    
+    <div class="flow-item" style="border-top: 3px solid var(--purple); padding-top: 15px;">
+        <strong style="color:#a78bfa;">📥 内へ新設</strong>
+        <p class="small">このカテゴリーの<strong>内側（一段深い子階層）</strong>に、新しい空のカテゴリーを作成します。入れ子（ネスト）を作るイメージです。</p>
+        <div class="code" style="font-size:0.75rem; padding:8px; margin-top:8px;">
+アングル:
+  正面: "straight"
+  <span style="color:#a78bfa;">ポーズ: {}</span> # ←ここに作られる</div>
+    </div>
+
+    <div class="flow-item" style="border-top: 3px solid #38bdf8; padding-top: 15px;">
+        <strong style="color:#38bdf8;">🔀 内の項目をソート</strong>
+        <p class="small">このカテゴリーの直下にある要素（ボタンやサブカテゴリ）を、50音・アルファベット順に綺麗に並び替えます。数字の1、2、10なども文字列順ではなく正確な数値順でソートされます。</p>
+    </div>
+    
+    <div class="flow-item" style="border-top: 3px solid var(--red); padding-top: 15px; background: rgba(69, 10, 10, 0.4);">
+        <strong style="color:#fca5a5;">❌ カテゴリ削除</strong>
+        <p class="small">アコーディオンと、その中の要素（子カテゴリやボタン）すべてを一発で完全抹消します。</p>
+    </div>
+</div>
+
+<div class="warn" style="margin-top: 25px;">
+    <strong>🛡️ ルート階層最後の1件・物理削除保護ガード（初見殺し対策）</strong><br>
+    YAMLファイル内からアコーディオンが1件も存在しなくなると、ファイルパースエラーが起きてシステムがクラッシュしてしまいます。
+    そのため、<strong>『一番外側の階層（ルート）にあるカテゴリーが、最後の1つになった場合』は、ゴミ箱をクリックしても削除処理が自動的に緊急ブロックされ、警告ダイアログが出現する</strong>安全ガードロジックが組み込まれています。
+</div>
+</section>
+
+<div class="section-anchor" id="editor-stock-yard"></div>
+<section class="card">
+<h2>匠エディタ 9. 待機ストックヤード ＆ 一括グループ流し込み（A系の流儀：組み立て実演）</h2>
+<p>
+「色々なタブから好みの髪型や衣装タグを集め、自分だけのオリジナルお気に入りセットを彫刻のように組み立てる」ためのA系列お気に入りの具体的な操作手順です。
+</p>
+
+<h3>A系列：一時ストックからお気に入りを構築する手順</h3>
+<div class="flow">
+    <div class="flow-item">
+        <strong style="color:var(--blue);">ステップ 1：好きなタグをストックする</strong>
+        <p class="small">
+        メイン画面の通常のタブから、まとめたいタグ（例：<code>ツインテール</code> や <code>セーラー服</code>）をクリックしてエディタ下部に表示させ、フォームの <strong>「☆ ストックする」</strong> ボタンをポチポチ押します。
+        登録されたタグは「★ ストック済」となり、画面最上部の「ストック待機中（件数）」に一時的にプールされます。
+        </p>
+    </div>
+    <div class="flow-item">
+        <strong style="color:var(--takumi);">ステップ 2：自作用ファイル「A00」を選択する</strong>
+        <p class="small">
+        左上の「Fav」プルダウンから、<strong>「A」</strong>を選択し、番号から<strong>「00」</strong>（あらかじめ物理ファイルを用意してある番号）を選択します。
+        アコーディオン画面に、ストック待機中バナーが出現します。
+        </p>
+    </div>
+    <div class="flow-item">
+        <strong style="color:var(--green);">ステップ 3：最後のカテゴリに一括流し込み保存</strong>
+        <p class="small">
+        バナーの右側にある <strong>「📥 最後のグループに貼り付け」</strong> ボタンをクリックします。
+        これにより、プールされていたすべてのタグが「A00.yml」の最後のカテゴリ（例: <code>テスト</code>）の末尾に、既存の情報を一切壊さずに一撃でマージ書き込みされ、ディスクに即座に物理保存されます。
+        </p>
+    </div>
+    <div class="flow-item">
+        <strong style="color:var(--purple);">ステップ 4：カテゴリ新設でさらに整理していく</strong>
+        <p class="small">
+        流し込んだ後、見出しの <strong>「💡 次へ新設」</strong> や <strong>「📥 内へ新設」</strong> ボタンを押して「髪型」や「衣服」などの新フォルダーを掘り、さらに別のタグをストックして「📥 貼り付け」を繰り返すことで、完璧に整理整頓された自分専用のパレットが完成します！
+        </p>
+    </div>
+</div>
+</section>
+
+<div class="section-anchor" id="editor-express-fav"></div>
+<section class="card">
+<h2>匠エディタ 10. 【特急登録】本家EPSのお気に入りからのお気に入り取り込みシステム（B系の流儀：特急実演）</h2>
+<p>
+「本家EPSのFav機能（一軍パレット）にたくさん登録したタグ群を、ワンクリックでそっくりそのままB系ファイルにセット化・流し込みを行う」手順です。
+A系のようにストックバッファをポチポチやる手間すら省いて一瞬でセットが完成します。
+</p>
+
+<h3>B系列：本家Favを高速でセット化・増設する手順</h3>
+<div class="flow">
+    <div class="flow-item">
+        <strong style="color:var(--blue);">ステップ 1：特急専用ファイル「B00」を選択する</strong>
+        <p class="small">
+        左上の「Fav」プルダウンから <strong>「B」</strong> を選び、番号から <strong>「00」</strong>（あらかじめ物理ファイルを用意してある番号）を選択します。
+        選択された瞬間に、本命安全ガードが解除され、サイドバー最上部に「追記」と「増設」の2つの特急ボタンが飛び出します。
+        </p>
+    </div>
+    <div class="flow-item">
+        <strong style="color:var(--takumi);">ステップ 2：新しいセットを増設して追加</strong>
+        <p class="small">
+        緑色のボタン <strong>「🗂️ 新しいセットを増設して追加」</strong> ボタンをポチッとクリックします。
+        </p>
+    </div>
+    <div class="flow-item">
+        <strong style="color:var(--yellow);">ステップ 3：プレビューで中身を確認してOK</strong>
+        <p class="small">
+        画面に「本家EPSから◯件のFavを検出しました」というダイアログと、その中から先頭3つのプレビュー（例：・ベリーショート ・短髪...）が表示されます。
+        中身に問題がなければ「OK」をクリックします。
+        </p>
+    </div>
+    <div class="flow-item">
+        <strong style="color:var(--green);">ステップ 4：B00.ymlに「セット1」として一瞬で保存</strong>
+        <p class="small">
+        「B00.yml」の中に <strong>「セット1」</strong> という新規フォルダが自動生成され、本家のお気に入りが完璧に移行・物理保存されます。
+        次にお気に入りをEPS本家で組み直して、今度は「既存カテゴリ（セット1）の末尾にねじ込みたい」ときは、B00を開いたまま「📥 既存の末尾セットに追記」を押すだけで綺麗に末尾に追加されます！
+        </p>
+    </div>
+</div>
+</section>
+
+<div class="section-anchor" id="editor-new-file"></div>
+<section class="card" style="border: 2px solid var(--success); box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);">
+<h2>匠エディタ 11. 📄 新規YAMLファイル作成システム（The Genesis）</h2>
+
+<p>
+匠エディタのサイドバー、お気に入り（Fav）プルダウンの直下の「📄 新規YAMLファイル作成」</strong> ボタンについて。
+</p>
+
+<p>
+これにより、事前にテキストエディタを開いてダミーデータを用意するという面倒な前準備が完全に不要となり、WebUIの画面上だけで<strong>「ファイルの作成 → お気に入り連携 → プロンプトの組み立て」</strong>という全てのワークフローが完結するようになります。
+</p>
+
+<div class="point" style="border-left-color: var(--success); background: rgba(16, 185, 129, 0.08);">
+    <strong>💡 Python側（バックエンド）の魔法：自動ディレクトリ生成</strong><br>
+    このシステムは、内部的に <code>mkdir(parents=True)</code> を呼び出しているため、ファイル名だけでなく<strong>「まだ存在しないフォルダ名」</strong>を指定した場合でも、途中のフォルダごと全自動で新規作成してくれます。
+</div>
+
+<h3>📋 新規作成の手順とルール</h3>
+
+<div class="flow">
+    <div class="flow-item">
+        <strong style="color:var(--success); font-size:1.1rem;">ステップ 1：ダイアログを開く</strong>
+        <p class="small">
+        サイドバーの「📄 新規YAMLファイル作成」ボタンをクリックすると、画面中央に作成用の専用ダイアログが立ち上がります。
+        </p>
+    </div>
+
+    <div class="flow-item">
+        <strong style="color:var(--success); font-size:1.1rem;">ステップ 2：ファイル名を指定する</strong>
+        <p class="small">
+        作成したいファイル名を入力します。<br>
+        末尾の拡張子 (<code>.yml</code>) はシステムが自動で付与するため、省略して名前だけを入力しても構いません。
+        </p>
+    </div>
+
+    <div class="flow-item">
+        <strong style="color:var(--success); font-size:1.1rem;">ステップ 3：自動ダミーデータ書き込み</strong>
+        <p class="small">
+        「作成する」を押すと、指定したファイル名で以下のダミーデータが全自動で書き込まれ、即座にエディタに選択・ロードされます。
+        </p>
+        <div class="code" style="padding:8px; margin-top:8px;">ダミーカテゴリ:
+  ダミーボタン: ""</div>
+    </div>
+</div>
+
+<div class="warn" style="border-left-color: var(--takumi); background: rgba(251, 146, 60, 0.08); margin-top: 30px;">
+    <h3 style="margin-top:0; color:var(--takumi);">💡 最重要：お気に入り(Fav) 連動ファイルの作り方</h3>
+    <p style="font-size:0.9rem; line-height:1.7;">
+    新しく作成したファイルを、画面左上の「Favorite」プルダウンや、本家EPSのFavエリアと連動させたい場合は、ファイル名を必ず以下のルールに従って命名してください。
+    </p>
+    <div class="code" style="color: #fbbf24; background: #0f172a; border-color: #78350f;">
+【命名形式】 favorite[英字1文字][数字2桁]
+（例）favoriteC00, favoriteC01, favoriteD99
+    </div>
+    <p style="font-size:0.9rem; line-height:1.7; margin-bottom: 0;">
+    ※ 匠エディタは、この形式で作成されたファイルを即座に検知し、自動的にお気に入りモード（「ストック待機中バナー」や「特急登録ボタン」の表示）へとUIを切り替えます。
+    </p>
+</div>
+
+<h3>📂 高度なテクニック：フォルダ分け（サブディレクトリの自動生成）</h3>
+<p>
+ファイル名入力欄に <strong>スラッシュ ( <code>/</code> )</strong> を含めることで、新しいフォルダを作りつつ、その中にYAMLファイルを配置することができます。
+</p>
+<ul class="simple-list">
+    <li><strong>入力例：</strong> <code>my_folder/pose_data</code></li>
+    <li><strong>結果：</strong> <code>tags/my_folder/pose_data.yml</code> が自動生成されます。</li>
+</ul>
+
+</section>
+
+
+<div class="section-anchor" id="tech-structure"></div>
+<section class="card">
+<h2>技術仕様 1. 3層アーキテクチャ（設計）</h2>
+
+<p>
+本システムは、Stable Diffusion / Gradioという制約の多いWebアプリケーション環境下で安定して動作させるため、明確に役割が分担された3つのレイヤーで設計されています。
+</p>
+
+<div class="flow" style="grid-template-columns: 1fr;">
+    <div class="flow-item">
+        <strong style="color:var(--takumi);">Layer 1: Gradio (Python) ── 永続化とファイルシステム</strong>
+        <p class="small">ファイルの読み書き（YAMLセーブ、Base64デコード、画像PNG書き出し、YAML読み込み）のみを担当。複雑なUI制御は一切行わず、命令を待ち受ける「入出力の港（ハブ）」として機能します。</p>
+    </div>
+    <div class="flow-item">
+        <strong style="color:var(--blue);">Layer 2: EasyPromptSelector (JavaScript) ── フロント表示と状態監視</strong>
+        <p class="small">WebUI側のボタン生成、プロンプトへのタグ挿入、可視化レイヤー、マクロ置換、および入力欄イベント監視を担当。</p>
+    </div>
+    <div class="flow-item">
+        <strong style="color:var(--success);">Layer 3: 匠エディタ (JavaScript) ── 匠編集エディタロジック</strong>
+        <p class="small">YAMLパース、編集差分の差分計算、重複防止判定、ドラッグ＆ドロップされた画像の超解像度圧縮、及び差分キャッシュ of 投函を担当。</p>
+    </div>
+</div>
+</section>
+
+<div class="section-anchor" id="tech-yaml"></div>
+<section class="card">
+<h2>技術仕様 2. YAML & 禁則仕様</h2>
+
+<p>
+本家Gradioのtextareaコンポーネントは、連続する空行（改行のみの行）があると、勝手にデータを詰めて削除してしまうという厄介な仕様があります。
+EPS-Kaiは、YAMLを出力する際に独自の改行処理を挟んでこれを回避しています。
+</p>
+
+<div class="code">// 改行のみの行に「半スペース」を自動挿入して、Gradio側の自動削除バグを完全にすり抜ける
+return yamlStr.replace(/\n\n/g, '\n \n');</div>
+
+<h3>シングルクォート（ ' ）のエスケープ禁則処理</h3>
+<p>
+Python（Gradio）とフロントJSの間でプロンプトテキストを転送する際、文字列の中に <strong>シングルクォート（ <code>'</code> ）</strong> がそのまま残っていると、JSパーサーが文字列表記の終端を誤認し、<strong>SyntaxError（Unterminated string literal）</strong>を引き起こして拡張機能全体の動作が永久停止（クラッシュ）する致命的なバグが懸念されます。
+</p>
+<div class="warn">
+    <strong>エスケープ禁則ルール：</strong><br>
+    プロンプトデータ内にシングルクォートが含まれている場合、描画処理やDOM組み立ての直前において、正規表現を用いてシングルクォートを確実に <code>\'</code> へと置換（エスケープ）します。これにより「バリア構造」といった大げさなDOM遮断を張ることなく、最も軽快かつスマートに構文破壊を100%根底から防御します。
+</div>
+</section>
+
+<div class="section-anchor" id="tech-state"></div>
+<section class="card">
+<h2>技術仕様 3. 双方向通信システム (手紙と郵便受けモデル)</h2>
+
+<p>
+完全に独立して動いている「EPS-Kai（本家）」と「匠エディタ」、および「Gradio（Python側）」は、ブラウザの `localStorage` と非同期フラグ通知によって、シームレスに同期しています。
+</p>
+
+<div class="flow">
+    <div class="flow-item">
+        <h3>1. 匠エディタ側での保存</h3>
+        <p class="small">画像を保存すると、エディタはキャッシュデータベース of 自分のキーを削除し、さらに郵便受けである `_gg_updates` 配列に更新されたキーを放り込みます。</p>
+    </div>
+    <div class="flow-item">
+        <h3>2. 本家EPS-Kai側の回収</h3>
+        <p class="small">本家側のチェッカーが `_gg_updates`（匠からの手紙）を発見すると、差分があったアイテムのみを通信スキャンし、一瞬でボタンの `◇` を `◉` へとリペイントします。</p>
+    </div>
+    <div class="flow-item">
+        <h3>3. 自動回収と消去</h3>
+        <p class="small">スキャンが成功すると、郵便受け（`_gg_updates`）は自動的に破棄され、次のセーブを待ち受けます。</p>
+    </div>
+</div>
+</section>
+
+<div class="section-anchor" id="tech-metadata"></div>
+<section class="card">
+<h2>技術仕様 4. Selected_Index による「日本語ボタン」の完全復元</h2>
+
+<p>
+通常、WebUIで生成された画像には、どのプロンプト文字列が使用されたかという「PNG Info」のみが記録されます。
+しかし、これだけでは再度画像をWebUIに投げ戻した際に、<strong>「どのカテゴリの、どのボタンを押してそれらを入力したのか」</strong>という情報が欠落しており、ボタンのハイライト状態が一切復元できません。
+</p>
+<p>
+EPS-Kaiは、生成されるPNG画像データのPNG chunk内に、独自のキーである <strong><code>Selected_Index</code></strong> データをシリアライズして記録します。
+</p>
+
+<h3>PNGメタデータに書き出されるSelected_Indexの構造</h3>
+<pre class="code">Selected_Index: [
+  { "tab": 0, "category": "hair-style", "index": 12 },
+  { "tab": 2, "category": "outfit-uniform", "index": 5 }
+]</pre>
+
+<h3>PNGドロップ時の完全アクティブ復帰プロセス</h3>
+<div class="good">
+    <strong>【最大の魔法：日本語ボタンがそのまま残る！】</strong><br>
+    ユーザーが画像をWebUIの「PNG Info」にドラッグ＆ドロップした際、EPS-Kaiの自動復元リスナーが起動します。<br><br>
+    もしプロンプトの英語テキスト（例：<code>1girl, blue hair, school uniform</code>）だけを頼りに復元しようとすると、どれがどのボタン由来なのか判別不可能です。<br>
+    しかし、この <code>Selected_Index</code> には「タブ」「カテゴリ」「インデックス」という<strong>物理的なボタン位置</strong>が記録されています。この情報を使って直接アクティブ化するため、<strong>画像を読み込んだ瞬間、あなたが作った『日本語のボタン』たちが、当時押されていた時と寸分の狂いもなく、100%そのまま同じ状態で美しくピカッと光って復元</strong>されます！
+</div>
+</section>
+
+<div class="section-anchor" id="tech-format"></div>
+<section class="card">
+<h2>技術仕様 5. YAMLデータの構築・多層構造ルールとRM展開</h2>
+
+<p>
+EPS-Kaiの圧倒的な表現力は、ボタンを定義する <code>YAML</code> ファイルの記述規則にあります。用途に合わせていくつかの柔軟なフォーマット、および多重ネストによる階層化をサポートしています。
+</p>
+
+<h3>① ドノーマル（単純な登録）</h3>
+<p>ボタン名とプロンプト値を「名前 ＋ コロン(<code>:</code>) ＋ ダブルクォート(<code>""</code>)で囲ったプロンプト」の順で記述します。右辺値は常にダブルクォートで保護することを強く推奨します。</p>
+<pre class="code">エメラルド髪: "emerald hair"
+正面: "straight"</pre>
+
+<h3>② CSOEフラグの付与（タグプレフィックス）</h3>
+<p>画像スキャン判定用のバッジフラグとして機能させたいボタンは、必ず<strong>「<code>名前 [フラグ]</code>（半角スペース1個を空けて[C]などのフラグ）」</strong>の順で記述します。これにより、UI上にカテゴリー絵文字アイコンが自動合成されます。</p>
+<pre class="code">エメラルド髪 [C]: "emerald hair"</pre>
+
+<h3>③ パイプ記号「|」による色コード（カラーボックス）連携</h3>
+<p>プロンプト値の後ろに <code>| #カラーコード</code> を付与することで、ボタン内に 14px 四方のカラーボックスをダイレクトにインライン描画させることができます。</p>
+<pre class="code">エメラルド髪: "emerald hair | #50c878"</pre>
+
+<h3>④ 複合的な構築（フラグ ＋ カラーコード）とプレビュー404エラーの完全回避</h3>
+<p>アイコンとカラーボックスの両方を備えた極めて高機能なボタンを記述する際の完全なフォーマット規則です。</p>
+<pre class="code">エメラルド髪 [C]: "emerald hair | #50c878"</pre>
+
+<div class="point">
+    <strong>💡 サムネ消失を防ぐ『純粋スプリット化』処理のキモ：</strong><br>
+    ホバープレビュー（サムネイル表示）が起動した際、単に <code>|#</code> を検出して画像候補から排除してしまうと、フォルダに実在する専用画像（<code>エメラルド髪 [C].png</code>）があってもプレビューが消失するバグが生じます。<br>
+    これを防ぐため、プレビュー画像探索ロジックは、値から色コード部分を一時的にスプリットして排除した<strong>純粋なプロンプト名（<code>emerald hair</code>）だけを取り出し、ボタン名と安全にマッチング</strong>させます。これにより無駄な404エラーを100%完璧に遮断します。
+</div>
+
+<h3>⑤ YAMLインデントによる「多層構造（入れ子）」とアコーディオン展開</h3>
+<p>
+半角スペース2つ（または4つ）による階層的なインデントを挟むことで、ボタンを多層フォルダ化（ネスト）できます。以下は「表情」をテーマにした完全な設計例です。
+</p>
+
+<pre class="code">表情:
+  笑顔系:
+    にっこり [C]: "smile"
+    悪だくみ笑顔 [C]: "evil smile"
+    照れ笑い [C]: "shy smile"
+  悲しみ:
+    ほろり涙 [C]: "crying"
+    号泣 [C]: "sobbing"
+  怒り:
+    激怒 [C]: "angry"
+    不機嫌ぷく顔 [C]: "pouting lips"</pre>
+
+<h3>⑥ カテゴリ全体のボタン化（一括展開・RMランダム抽選）</h3>
+<p>
+「表情」や「笑顔系」といったカテゴリ名（親ジャンル）も1つの独立したボタンとして表示されます。
+このボタンを利用して、以下のようなマクロパスキーを構築できます。
+</p>
+<pre class="code">%%@表情@%%           # 表情カテゴリ内のすべてのプロンプトからランダムで1つを自動抽選！
+%%@表情:笑顔系@%%       # 多層ネストされた「笑顔系」の配下のみを対象として自動抽選！</pre>
+</section>
+
+<div class="section-anchor" id="tech-master"></div>
+<section class="card">
+<h2>技術仕様 6. 拡張性：マスターマップでの独自フラグ追加</h2>
+
+<p>
+プログラムコードのいたる所に特定の判定記号を直接書き込んでしまう（ハードコーディング）状態を完全に廃止しました。
+すべては、コードの先頭に定義された **`IMAGE_BADGE_MAP`** および **`TAG_PREFIX_MAP`** を参照して動作します。
+</p>
+
+<p>
+<strong>【実践】新しいフラグ <code>[W] 武器 (Weapon)</code> を追加する場合</strong><br>
+EPS-KaiのメインJSファイル冒頭にある2つの配列に、以下の1行ずつを書き足すだけです。
+</p>
+
+<div class="code">const TAG_PREFIX_MAP = {
+    '[C]': { icon: '👤', label: 'Character' },
+    '[S]': { icon: '❤️', label: 'Series/Style' },
+    '[O]': { icon: '👕', label: 'Outfit' },
+    '[E]': { icon: '💎', label: 'Effect/Accessory' },
+    '[W]': { icon: '⚔️', label: 'Weapon' }  // ← これを追加！
+};
+
+const IMAGE_BADGE_MAP = {
+    'C': { label: '◉ C', color: '#3b82f6' },
+    'S': { label: '◉ S', color: '#10b981' },
+    'O': { label: '◉ O', color: '#f59e0b' },
+    'E': { label: '◉ E', color: '#8b5cf6' },
+    'W': { label: '◉ W', color: '#94a3b8' }, // ← これを追加！
+    'G': { label: '★ G', color: '#facc15' }
+};</div>
+
+<p>
+<strong>これだけで完了です！</strong> ロジックコードには1文字も触れることなく、本家EPS-Kaiのボタン表示、匠エディタのフラグトグル、画像名保存、ホバー時のバッジなど、システム全体が <code>[W]</code> フットバッジに全自動で対応・連動し始めます。
+</p>
+
+<div class="warn">
+    <strong>⚠️ 【超重要：Gフラグに関する絶対禁則事項】</strong><br>
+    マスターマップ内の <strong>'G' キー（汎用バッジ：label: '★ G'）</strong>は、専用画像が存在しない場合にフォールバック探索を行うためのシステム予約キーです。この 'G' フラグの名称変更・削除は、システムを致命的に破壊する恐れがあるため<strong>「変更不可・削除厳禁」</strong>として運用してください。
+</div>
+</section>
+
+<div class="section-anchor" id="tech-end"></div>
+<section class="card">
+<h2>技術仕様 7. なぜこの構造なのか</h2>
+
+<p>
+Gradio環境でのWebUI拡張開発は、頻繁に画面が再生成されたり、DOM（HTML要素）が丸ごと削除されたりする、非常に不安定な環境です。
+<br>
+このシステムは、サーバーへの問い合わせを極限まで減らし、「ブラウザ側のローカルストレージ（キャッシュ）」と「非同期通知」を主軸に設計したことで、**驚異的な動作の軽さ、無駄のない画像同期、それからWebUIの再読み込みにもへこたれない強力な復旧力**を担保することができました。
+</p>
+<p class="good">
+「必要だからこそ削り、必要だからこそ徹底してスマートにした」
+この引き算の思想こそが、EPS-Kaiおよび匠エディタを支えるコアロジックです。
+</p>
+</section>
+
+<div class="section-anchor" id="tech-copyright"></div>
+<section class="card">
+<h2>技術仕様 8. 【最厳重】著作権ライセンスと自己責任・問い合わせ厳禁に関する誓約</h2>
+
+<div class="warn" style="border-left-width: 8px;">
+    <h3 style="margin-top:0; color:white; font-size:1.5rem;">⚠️ 本家作者様および改造開発者への問い合わせは「永久厳禁」です</h3>
+    <p style="color:white; font-weight:bold;">
+    本ソフトウェア「EPS-Kai」および「匠エディタ（Genesis Gear）」は、元となる「EasyPromptSelector」の作者である blue-pen5805 様が開発・公開されたオリジナルソースコードをベースに、改造製作者（およびそれらを取りまとめ改変した製作者）が独自に機能拡張を施した【完全なる二次創作・改造非公式アドオン】です。
+    </p>
+    <p style="color:white;">
+    この非公式改造アドオンを使用したことによって発生したいかなる不具合、データ破損、システムクラッシュ、バグ、エラー等について、<strong>オリジナル開発者である blue-pen5805 様、ならびに本改造に関わった製作者は「一切の責任を負わず、いかなる質問や個別サポートにも応じません」。</strong>
+    </p>
+</div>
+
+<h3>📋 クレジットとオリジナルライセンス情報</h3>
+<p>
+元の極めて素晴らしいコードに多大なるリスペクトを表し、以下にオリジナルソースの著作権情報を掲示します。
+</p>
+<div class="code">EasyPromptSelector
+Copyright (c) 2023 blue-pen5805
+Licensed under the MIT License</div>
+
+<h3>🙅‍♀️ 絶対遵守すべき3大誓約ルール</h3>
+<p>
+本ツールを導入・使用、またはご自身でさらなる改造（再配布等を含む）を行う場合は、以下の誓約事項に同意したものとみなします。
+</p>
+<ul class="simple-list">
+    <li><strong>1. 問い合わせや個別サポートの要求は100%お断り（永久厳禁）：</strong><br>
+    不具合やバグ、仕様に関する質問、動かないといった苦情など、どのような些細な内容であっても<strong>オリジナルの作者である blue-pen5805 様、および非公式コード改造に関わったサポート担当者（AI改修アシスタントや製作者個人を含むすべての当事者）へ直接コンタクトを取ったり、問い合わせを送ったりする行為は絶対に、絶対に永久厳禁とします。</strong>マナーを守れない不適切な問い合わせ行為があった場合、予告なく本アドオンパッケージの提供そのものが永久閉鎖されます。</li>
+    <li><strong>2. 完全なる「自己責任」の原則：</strong><br>
+    本ツールは無保証で提供されます。本ツールを使用したことによる画像生成環境の破壊、PCの動作不良、大切に組み立ててきたYAMLデータの消失、その他いかなる損害についても、当事者一同は一切の復旧・賠償・解決義務を負いません。<strong>作業前には、必ずディスク上の既存のYAMLデータを手動で別フォルダに完全バックアップ</strong>してください。</li>
+    <li><strong>3. 改変と再配布の自由：</strong><br>
+    MITライセンスに基づき、本ツールのソースコードをさらにご自身で再改造、最適化、配布することは完全に許可されています。ただし、どのような改造版であっても<strong>「オリジナルの作者様、およびこのパッケージの製作者には絶対に迷惑をかけない（問い合わせ先として彼らの名前や連絡先を掲載しないこと、および彼らをサポート窓口に仕立て上げないこと）」</strong>という原則を徹底して遵守してください。</li>
+</ul>
+
+<div class="quote" style="border-left-color: var(--red); background: rgba(239, 68, 68, 0.03);">
+「無茶な問い合わせで開発者を疲れさせない、大人の開発マナー」を全員で徹底し、安全で軽快、かつ極めて快適なプロンプト構築ライフを自己責任のもとで存分に楽しみましょう！
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+// サイドバーのアクティブリンク制御
+const sections = document.querySelectorAll(".section-anchor");
+const navLinks = document.querySelectorAll(".nav-link");
+
+window.addEventListener("scroll", () => {
+    let current = "";
+    let closest = Infinity;
+
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        const distance = Math.abs(rect.top - window.innerHeight * 0.3);
+
+        if (distance < closest) {
+            closest = distance;
+            current = section.getAttribute("id");
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === "#" + current) {
+            link.classList.add("active");
+        }
+    });
+});
+</script>
+
+</body>
+</html>

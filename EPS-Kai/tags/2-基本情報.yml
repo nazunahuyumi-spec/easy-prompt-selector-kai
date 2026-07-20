@@ -1,0 +1,101 @@
+年齢・属性・職業:
+  対象:
+    １人の女性: "1girl"
+    １人の男性: "1boy"
+    複数の女性: "2girls, 3girls"
+  年齢（微調整）:
+    子供: "child"
+    １５歳: "15 years old"
+    １８歳: "18 years old"
+    ２2歳: "22 years old"
+    ３0代: "30 years old"
+  性格・ジャンル:
+    かわいい系: "kawaii, adorable"
+    清楚・お嬢様: "ojousama, refined"
+    活発・ボーイッシュ: "tomboyish, sporty"
+  職業（バリエーション拡張）:
+    メイド: "maid"
+    巫女: "miko"
+    女教師: "female teacher"
+    看護師: "nurse"
+    軍人: "military uniform, soldier"
+
+体型 (Body):
+  基本スタイル:
+    曲線的: "curvy"
+    普通: "medium"
+    モデル: "model, runway model"
+    妖精のような小柄さ: "petite, small frame"
+  肉付き（質感重視）:
+    スリム: "slim"
+    ぽっちゃり: "plump, chubby"
+  筋肉・骨格:
+    筋肉質: "muscular"
+    細マッチョ: "toned, athletic"
+    細腰: "narrow waist, cinched waist"
+  その他（フォルム強調）:
+    SDキャラ（ミニ）: "chibi, super deformed"
+    长身（脚長）: "tall, long legs"
+
+胸 (Breasts):
+  大きさ:
+    絶壁: "flat chest"
+    小・貧乳: "small breasts"
+    中くらい: "medium breasts"
+    巨乳: "large breasts"
+    爆乳: "huge breasts"
+  形状・質感:
+    美しい: "beautiful"
+    端整: "shapely"
+    軟らかい: "soft"
+    むちむち: "voluptuous"
+
+身体パーツ・肌:
+  パーツ:
+    腋（なめらか）: "smooth armpits"
+    鎖骨（浮き出し）: "defined collarbone"
+    へそ（奥行き）: "deep navel, belly button"
+    腰のくびれ: "narrow waist, snatched waist"
+    鼠径部（Vライン）: "inguinal crease, pelvic bone"
+  標準・色白:
+    透き通った白: "fair skin, translucent"
+    青白い: "pale skin, porcelain"
+    磁器のような肌: "porcelain skin, flawless"
+  褐色・日焼け:
+    ビキニの日焼け: "bikini tan, tanlines"
+    キャラメル色: "caramel skin, golden glow"
+    チョコレート色: "chocolate skin, rich brown"
+    日焼け: "tan skin, sun-kissed"
+  質感・ディテール:
+    濡れたような質感: "wet skin, glistening"
+    汗ばんだ肌: "sweaty skin, damp"
+    そばかす: "freckled skin, natural dots"
+    タトゥー入りの肌: "tattooed skin, ink art"
+
+目の色:
+  基本・標準色:
+    黒目: "black eyes, deep onyx|#0d0d0d"
+    ブラウン目: "brown eyes, chestnut eyes|#653c24"
+    青目: "blue eyes, sapphire blue|#0f52ba"
+    金目: "gold eyes, amber glow|#ffd700"
+    翠色目: "green eyes, emerald green|#00a86b"
+    灰色目: "gray eyes, ash eyes|#708090"
+    赤目: "red eyes, crimson eyes|#dc143c"
+    ピンク目: "pink eyes, rosy eyes|#ff69b4"
+    パープル目: "purple eyes, violet eyes|#8a2be2"
+  宝石・貴金属:
+    アメジスト目: "amethyst eyes|#9966cc"
+    サファイア目: "sapphire eyes|#0f52ba"
+    エメラルド目: "emerald eyes|#50c878"
+  概念・特殊・幻想:
+    悪魔目: "demon eyes, glowing red pupils|#e60000"
+    きらめく目: "sparkling eyes, glittering|#fffdd0"
+    金銀妖瞳目: "heterochromia eyes, odd eyes|#ffd700"
+    猫目目: "cat eyes, slit pupils|#ccff00"
+    宇宙・銀河目: "galaxy eyes, nebula pupils|#483d8b"
+    ハート目: "heart eyes, loving eyes|#ff1493"
+    ネオン目: "neon eyes, glowing iris|#00ff66"
+  状態・演出:
+    多色（マルチ）: "multicolored eyes, iridescent"
+    発光する: "luminous eyes, glowing iris"
+    燃えるような目: "fiery eyes, burning embers|#ff4500"
