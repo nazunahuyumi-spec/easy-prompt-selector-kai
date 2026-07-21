@@ -455,7 +455,8 @@ class EasyPromptSelector {
                 results.slice(0, 100).forEach(item => {
                     let extMark = ''; let extColor = '';
                     if (item.btn) { const mNode = item.btn.querySelector('.eps-mark-node'); if (mNode) { extMark = mNode.textContent; extColor = mNode.style.color; } }
-                    const btn = this.renderTagButton(item.rawTitle, item.value, item.originalColor, item.category, true, extMark, extColor); fragment.appendChild(btn);
+                    // 🌟 検索結果でも item.fullPath を渡すように引数を追加
+                    const btn = this.renderTagButton(item.rawTitle, item.value, item.originalColor, item.category, true, extMark, extColor, item.fullPath); fragment.appendChild(btn);
                 });
             }
             
@@ -532,7 +533,8 @@ class EasyPromptSelector {
 
     toggleFavorite(title, value) { const idx = this.favorites.findIndex(f => f.v === value); if (idx >= 0) this.favorites.splice(idx, 1); else this.favorites.push({ t: title, v: value }); localStorage.setItem(this.FAV_STORAGE_KEY, JSON.stringify(this.favorites)); this.renderHistoryAndMacros(); this.refreshButtonStyles(); }
 
-    showPreview(displayTitle, value, category, rawTitle = "") {
+    // 🌟 引数の最後に fullPath = "" を追加
+    showPreview(displayTitle, value, category, rawTitle = "", fullPath = "") {
         const previewArea = document.getElementById(this.PREVIEW_ID); if (!previewArea) return;
         const baseFilePath = this.tagFilePaths[category]; let localCache = {}; try { const saved = localStorage.getItem('eps_image_status_cache'); if (saved) localCache = JSON.parse(saved); } catch (e) { localCache = {}; }
 
@@ -560,15 +562,16 @@ class EasyPromptSelector {
 
         const cleanValDisplay = value.replace(/^[\s,]+|[\s,]+$/g, '').trim(); const evaporatedDisplay = cleanValDisplay.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); const highlightedDisplay = evaporatedDisplay.replace(/(&lt;lora:.*?:.*?&gt;)/g, '<span style="color:#7a19b3;font-weight:700;">$1</span>');
         
-        // 🌟 修正箇所：タイトル下線（横棒）の直下に、小さめの文字で「📁 ファイル名.yml」が入るようにHTML構造を調整
-        const textContent = `<div style="flex: 0 0 35%; min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; padding-left: 15px; overflow-y: auto;"><div style="font-weight:900; color:#3b82f6; font-size:1.15rem; line-height:1.2; word-break:break-all; border-bottom: 2px solid rgba(59, 130, 246, 0.2); padding-bottom: 4px;">${displayTitle}</div><div style="font-size:0.75rem; color:var(--body-text-color-subdued); opacity:0.65; margin-top:-6px; font-weight:bold; display:flex; align-items:center; gap:4px;">📁 ${category}</div><div style="font-family:monospace; color:var(--body-text-color); font-size:0.95rem; background:rgba(0,0,0,0.04); padding:10px; border-radius:4px; word-break:break-all; border:1px solid var(--block-border-color); line-height:1.4;">${highlightedDisplay}</div></div>`;
+        // 🌟 変更：📁 の横を ${fullPath || category} にし、長くなっても見やすいように line-height と word-break を調整
+        const textContent = `<div style="flex: 0 0 35%; min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; padding-left: 15px; overflow-y: auto;"><div style="font-weight:900; color:#3b82f6; font-size:1.15rem; line-height:1.2; word-break:break-all; border-bottom: 2px solid rgba(59, 130, 246, 0.2); padding-bottom: 4px;">${displayTitle}</div><div style="font-size:0.75rem; color:var(--body-text-color-subdued); opacity:0.8; margin-top:-6px; font-weight:bold; display:flex; align-items:flex-start; gap:4px; line-height:1.4; word-break:break-all;">📁 ${fullPath || category}</div><div style="font-family:monospace; color:var(--body-text-color); font-size:0.95rem; background:rgba(0,0,0,0.04); padding:10px; border-radius:4px; word-break:break-all; border:1px solid var(--block-border-color); line-height:1.4;">${highlightedDisplay}</div></div>`;
         
         previewArea.innerHTML = `<div style="display:flex; width:100%; height:100%; align-items: stretch;">${imgHtml}${textContent}</div>`;
     }
 
     clearPreview() { const previewArea = document.getElementById(this.PREVIEW_ID); if (previewArea) this.setEmptyPreview(previewArea); }
 
-    renderTagButton(title, value, color, category = '', isSearchResult = false, extMark = '', extColor = '') {
+    // 🌟 引数の最後に fullPath = '' を追加
+    renderTagButton(title, value, color, category = '', isSearchResult = false, extMark = '', extColor = '', fullPath = '') {
         const rawTitle = title.replace(/\s*\(\d+\)\s*$/, ''); let displayTitle = title; let prefixIcon = ''; let pureTitle = rawTitle;
         Object.entries(TAG_PREFIX_MAP).forEach(([prefix, info]) => { if (displayTitle.includes(prefix)) { prefixIcon = info.icon; pureTitle = displayTitle.replace(prefix, '').replace(/\s*\(\d+\)\s*$/, '').trim(); displayTitle = info.icon + displayTitle.replace(prefix, '').trim(); } });
 
@@ -580,7 +583,6 @@ class EasyPromptSelector {
 
         if (hasColorBox) { const parts = value.split('|'); const hex = parts[1]?.trim(); if (hex) { const colorBox = document.createElement('span'); colorBox.style.width = '14px'; colorBox.style.height = '14px'; colorBox.style.borderRadius = '3px'; colorBox.style.background = hex; colorBox.style.border = '1px solid rgba(0,0,0,0.35)'; colorBox.style.boxShadow = '0 0 0 1px rgba(255,255,255,0.6)'; colorBox.style.flexShrink = '0'; btn.appendChild(colorBox); } }
         
-        // 🌟 修正1：検索結果でマークが存在しない場合は◇を追加しないように制御
         if (isRealPromptButton && !hasColorBox) { 
             if (!isSearchResult || (isSearchResult && extMark)) {
                 const markNode = document.createElement('span'); markNode.className = 'eps-mark-node'; markNode.style.fontWeight = '900'; markNode.style.flexShrink = '0'; 
@@ -594,15 +596,17 @@ class EasyPromptSelector {
 
         const textToDisplay = prefixIcon ? displayTitle.substring(prefixIcon.length).trim() : displayTitle; const textNode = document.createElement('span'); textNode.className = 'eps-text-node'; textNode.textContent = textToDisplay; btn.appendChild(textNode);
 
-        this.allButtons.push({ btn, value, originalColor: color, displayTitle: (isSearchResult && extMark) ? (extMark + ' ' + displayTitle) : displayTitle, cleanDisplayTitle: displayTitle, prefixIcon, pureTitle, category, rawTitle, isPrompt: isRealPromptButton && !hasColorBox, isSearchResult });
+        // 🌟 fullPath を記録データとして追加
+        const currentFullPath = fullPath || category;
+        this.allButtons.push({ btn, value, originalColor: color, displayTitle: (isSearchResult && extMark) ? (extMark + ' ' + displayTitle) : displayTitle, cleanDisplayTitle: displayTitle, prefixIcon, pureTitle, category, rawTitle, isPrompt: isRealPromptButton && !hasColorBox, isSearchResult, fullPath: currentFullPath });
 
-        if (!value.startsWith('@')) { btn.addEventListener('mouseenter', () => this.showPreview(displayTitle, value, category, rawTitle)); btn.addEventListener('mouseleave', () => this.clearPreview()); }
+        // 🌟 showPreview に currentFullPath を渡すように変更
+        if (!value.startsWith('@')) { btn.addEventListener('mouseenter', () => this.showPreview(displayTitle, value, category, rawTitle, currentFullPath)); btn.addEventListener('mouseleave', () => this.clearPreview()); }
         
         btn.onclick = (e) => { 
             e.preventDefault(); const cleanVal = value.trim();
             if (this.isFavEditing) { this.toggleFavorite(displayTitle, cleanVal); return; }
             if (this.editingMacro) { 
-                // 🌟 修正2：マクロの左クリック時にトグル＆カーソル追従
                 const isRM = this.editingMacro.startsWith('RM'); const delim = isRM ? ' ;; ' : ', '; 
                 let formattedVal = (isRM && cleanVal.includes(',')) ? `"${cleanVal}"` : cleanVal; 
                 let currentParts = this.editingContent.split(delim).map(s => s.trim()).filter(s => s);
@@ -620,7 +624,6 @@ class EasyPromptSelector {
             e.preventDefault(); const baseName = rawTitle ? rawTitle : displayTitle.replace(/\s*\(\d+\)\s*$/, ''); const macroLabel = `%%${baseName}%%`;
             if (this.isFavEditing) return false;
             if (this.editingMacro) { 
-                // 🌟 修正3：マクロの右クリック（ラベル）時にもトグル＆カーソル追従
                 const isRM = this.editingMacro.startsWith('RM'); const delim = isRM ? ' ;; ' : ', '; 
                 let currentParts = this.editingContent.split(delim).map(s => s.trim()).filter(s => s);
                 if (currentParts.includes(macroLabel)) currentParts = currentParts.filter(p => p !== macroLabel);
@@ -695,20 +698,29 @@ class EasyPromptSelector {
     }
 
     renderTagGroups(tags, prefix = '', isLocked = false, depth = 0, category = '') {
+        // 🌟 追加：プレフィックスのコロンを「 ＞ 」に変換してパンくずリスト化
+        const breadcrumb = prefix ? prefix.split(':').join(' ＞ ') : category;
+
         if (Array.isArray(tags)) {
             const btnContainer = document.createElement('div'); btnContainer.style.display = 'flex'; btnContainer.style.flexWrap = 'wrap'; btnContainer.style.paddingLeft = '5px'; btnContainer.style.paddingBottom = '4px';
-            tags.forEach(t => btnContainer.appendChild(this.renderTagButton(t, t, 'secondary', category))); return [btnContainer];
+            // 🌟 fullPath を引数の最後に追加
+            tags.forEach(t => btnContainer.appendChild(this.renderTagButton(t, t, 'secondary', category, false, '', '', `${breadcrumb} ＞ ${t}`))); return [btnContainer];
         } else {
             const keys = Object.keys(tags);
             return keys.map((key, i) => {
                 const values = tags[key]; const randomKey = `${prefix}:${key}`;
-                if (typeof values === 'string') return this.renderTagButton(key, values, 'secondary', category);
+                const fullPath = `${breadcrumb} ＞ ${key}`; // 🌟 追加：現在地のフルパス
+                
+                if (typeof values === 'string') return this.renderTagButton(key, values, 'secondary', category, false, '', '', fullPath);
+                
                 const fields = EPSElementBuilder.tagFields(depth); const headRow = document.createElement('div'); headRow.style.display = 'flex'; headRow.style.alignItems = 'center'; headRow.style.marginBottom = '2px';
                 const bodyContainer = document.createElement('div'); bodyContainer.style.flexWrap = 'wrap'; const isAutoOpen = (i === 0 && depth === 0); bodyContainer.style.display = isAutoOpen ? 'flex' : 'none';
                 const sw = document.createElement('span'); sw.textContent = isAutoOpen ? '▼' : '▶'; sw.style.cursor = 'pointer'; sw.style.padding = '0 8px'; sw.style.fontSize = '0.8rem'; sw.style.color = '#ff9800'; sw.style.fontWeight = 'bold';
                 sw.onclick = () => { const isOpening = sw.textContent === '▶'; sw.textContent = isOpening ? '▼' : '▶'; bodyContainer.style.display = isOpening ? 'flex' : 'none'; };
                 const totalCount = this.countTags(values); const displayKey = `${key} (${totalCount})`;
-                const headBtn = this.renderTagButton(displayKey, `@${randomKey}@`, 'primary', category);
+                
+                // 🌟 fullPath を引数の最後に追加
+                const headBtn = this.renderTagButton(displayKey, `@${randomKey}@`, 'primary', category, false, '', '', fullPath);
                 headRow.append(sw, headBtn); fields.append(headRow, bodyContainer);
                 this.renderTagGroups(values, randomKey, isLocked, depth + 1, category).forEach(c => bodyContainer.appendChild(c)); return fields;
             });
